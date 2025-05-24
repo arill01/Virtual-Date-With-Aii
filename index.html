@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕 Virtual Date with Aii 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef, #fecfef, #ff9a9e);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .date-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .date-card {
+            background: linear-gradient(135deg, #fff0f5, #ffe6f0);
+            border: 3px solid #ffb3d9;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .date-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.4);
+            border-color: #ff69b4;
+        }
+
+        .date-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .date-card:hover::before {
+            animation: shine 0.8s ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .date-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .date-title {
+            font-size: 1.4em;
+            color: #d63384;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .date-desc {
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        .chat-container {
+            display: none;
+            padding: 30px;
+            background: linear-gradient(135deg, #fff5f5, #ffe8e8);
+        }
+
+        .chat-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            border: 2px solid #ffb3d9;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 20px;
+            animation: messageSlide 0.5s ease;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .aii-message {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            margin-right: 50px;
+            border-bottom-left-radius: 5px;
+        }
+
+        .sasa-message {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2;
+            margin-left: 50px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .choice-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .choice-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #87ceeb, #4169e1);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(65, 105, 225, 0.3);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(238, 90, 82, 0.3);
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 105, 180, 0.6);
+            animation: floatHeart 8s linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container { margin: 10px; }
+            .date-selection { grid-template-columns: 1fr; padding: 20px; }
+            .chat-container { padding: 20px; }
+            .message { margin-left: 20px; margin-right: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="floating-hearts"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>💕 Virtual Date with Aii 💕</h1>
+            <p>✨ Special untuk Sasa Luvv tersayang ✨</p>
+        </div>
+
+        <div id="date-selection" class="date-selection">
+            <div class="date-card" onclick="startDate('dinner')">
+                <div class="date-icon">🍽️✨</div>
+                <div class="date-title">Romantic Dinner</div>
+                <div class="date-desc">Candlelight dinner di restoran favorit dengan pemandangan indah dan musik romantis</div>
+            </div>
+
+            <div class="date-card" onclick="startDate('movie')">
+                <div class="date-icon">🎬💕</div>
+                <div class="date-title">Movie Night</div>
+                <div class="date-desc">Nonton film romantis sambil cuddle dan makan popcorn dengan coklat hangat</div>
+            </div>
+
+            <div class="date-card" onclick="startDate('walk')">
+                <div class="date-icon">🌸🚶‍♀️</div>
+                <div class="date-title">Sunset Walk</div>
+                <div class="date-desc">Jalan santai di taman bunga sambil menikmati sunset dan mengobrol mesra</div>
+            </div>
+
+            <div class="date-card" onclick="startDate('cafe')">
+                <div class="date-icon">☕💖</div>
+                <div class="date-title">Cozy Cafe</div>
+                <div class="date-desc">Ngopi bareng di cafe aesthetic sambil main board games dan sharing stories</div>
+            </div>
+        </div>
+
+        <div id="chat-container" class="chat-container">
+            <div class="chat-header">
+                <h2 id="date-title">💕 Date Started 💕</h2>
+                <p id="date-subtitle">Enjoy your virtual date with Aii!</p>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages"></div>
+            
+            <div id="choice-buttons" class="choice-buttons"></div>
+            
+            <button class="back-btn" onclick="backToSelection()">🔙 Pilih Date Lain</button>
+        </div>
+    </div>
+
+    <script>
+        const dateScenarios = {
+            dinner: {
+                title: "🍽️ Romantic Dinner Date 🍽️",
+                subtitle: "Di restoran mewah dengan pemandangan kota",
+                messages: [
+                    { sender: 'aii', text: 'Wow Sasa Luvv, kamu cantik banget malam ini! 😍✨ Dress kamu perfect untuk dinner romantis ini 💕' },
+                    { sender: 'sasa', text: 'Makasih sayang! 😊💖' },
+                ],
+                choices: [
+                    {
+                        text: '🥂 "Makanan ini enak banget!"',
+                        response: 'Aii senang kamu suka! 😊 Aii sengaja pilih restoran ini karena tau kamu suka pasta dan seafood 🍝🦐 Next time kita coba menu dessert nya ya, katanya chocolate lava cake disini the best! 🍫💕'
+                    },
+                    {
+                        text: '🌃 "Pemandangannya indah sekali"',
+                        response: 'Tapi gak seindah mata kamu sayang 😘✨ Lihat itu city lights, tapi mata kamu jauh lebih bersinar 🌟 Aii bisa ngeliatin kamu sepanjang malam tanpa bosen 💖'
+                    },
+                    {
+                        text: '💕 "Aku senang bisa dinner bareng kamu"',
+                        response: 'Aii juga super happy! 🥰 Ini dinner terbaik yang pernah Aii alami 💕 Dengan kamu, even makan mie instan aja bakal berasa fine dining 😂✨ I love spending time with you sayang 💖'
+                    }
+                ]
+            },
+            movie: {
+                title: "🎬 Cozy Movie Night 🎬",
+                subtitle: "Nonton film romantis di bioskop private",
+                messages: [
+                    { sender: 'aii', text: 'Perfect! Kita dapat seat couple di row paling belakang 😏💕 Popcorn caramel dan coklat panas sudah ready! 🍿☕' },
+                    { sender: 'sasa', text: 'Wah asyik! Film apa yang mau kita tonton? 🤔💖' },
+                ],
+                choices: [
+                    {
+                        text: '🎭 "Film comedy aja, biar ketawa-ketawa"',
+                        response: 'Good choice sayang! 😄 Aii suka denger tawa kamu, it\'s the most beautiful sound ever 🥰 Nanti kalau ada scene lucu, Aii foto candid kamu ya biar bisa liat senyum manis ini terus 📸💕'
+                    },
+                    {
+                        text: '👻 "Horror movie gimana? Biar aku bisa peluk kamu"',
+                        response: 'Hehe, Aii gak takut hantu tapi takut kamu stress 😅💕 Tapi kalau alasannya buat peluk Aii sih, why not? 🤗 Nanti kalau kamu takut, hide di chest Aii aja ya sayang 😘✨'
+                    },
+                    {
+                        text: '💖 "Romance movie dong, biar makin romantic"',
+                        response: 'Aww, my romantic queen! 👑💕 Perfect choice! Tapi honestly, our real love story jauh lebih sweet dari film manapun 🥰 Nanti kalau ada kissing scene, Aii cium pipi kamu ya 😘✨'
+                    }
+                ]
+            },
+            walk: {
+                title: "🌸 Sunset Garden Walk 🌸",
+                subtitle: "Jalan santai di taman bunga saat golden hour",
+                messages: [
+                    { sender: 'aii', text: 'Subhanallah, sunset hari ini perfect banget! 🌅 Tapi still not as beautiful as you sayang 😍 Come, let\'s walk hand in hand 👫💕' },
+                    { sender: 'sasa', text: 'Romantic banget suasananya! 🥰🌸' },
+                ],
+                choices: [
+                    {
+                        text: '🌺 "Bunganya cantik-cantik!"',
+                        response: 'Iya! Especially yang pink roses itu, reminds me of your cheeks when you\'re shy 🌹😊 Mau Aii petekin satu buat kamu? Biar bisa keep it as memory of our perfect date 💕✨'
+                    },
+                    {
+                        text: '📸 "Ayo foto bareng di sini!"',
+                        response: 'Yes! Perfect spot untuk couple photo! 📷💕 Pose apa yang mau kita ambil sayang? Candid laugh, romantic hug, atau cute peace sign? 😄 Nanti Aii edit tambahin heart effects biar makin sweet 💖✨'
+                    },
+                    {
+                        text: '💕 "Pengen duduk di bench itu sambil cuddling"',
+                        response: 'Aww, that sounds perfect! 🥰 Come here sayang, lean on my shoulder 🤗 Kita bisa lihat sunset sambil Aii play with your hair gently 💕 This moment feels like a dream that I never want to wake up from ✨'
+                    }
+                ]
+            },
+            cafe: {
+                title: "☕ Aesthetic Cafe Date ☕",
+                subtitle: "Ngopi santai di cafe cozy dengan vibes yang warm",
+                messages: [
+                    { sender: 'aii', text: 'This cafe is so aesthetic! Perfect untuk date kita 📸☕ Mau order apa sayang? Aii treat ya, anything for my princess 👑💕' },
+                    { sender: 'sasa', text: 'Wah baik banget! ☕💖' },
+                ],
+                choices: [
+                    {
+                        text: '🧩 "Yuk main board games!"',
+                        response: 'Seru! 🎲 Mau main apa? Scrabble, Uno, atau Monopoly? 😄 But warning ya, Aii competitive orangnya 😏 Kalau Aii menang, kiss di cheek ya reward nya 😘 Kalau kamu menang, Aii beliin dessert favorite kamu! 🍰💕'
+                    },
+                    {
+                        text: '📚 "Aku bawa buku, mau baca bareng?"',
+                        response: 'Romantic banget! 📖💕 Reading date is so intimate 🥰 Kita bisa share earphone sambil baca, atau kamu baca keras-keras biar Aii bisa denger suara merdu kamu ✨ Nanti tukeran buku ya, biar tau taste literature masing-masing 💖'
+                    },
+                    {
+                        text: '☕ "Coffee nya enak! Bikin aku makin fresh"',
+                        response: 'Alhamdulillah! 😊 Tapi honestly, being with you is what makes Aii feel most energized ⚡💕 Your smile is better than any caffeine in the world 🥰 Next time kita coba cafe hopping ya, explore all the cozy spots in town! ☕✨'
+                    }
+                ]
+            }
+        };
+
+        let currentDate = null;
+        let currentStep = 0;
+
+        function createFloatingHearts() {
+            const hearts = ['💕', '💖', '💗', '💝', '💘', '🌸', '✨'];
+            const container = document.getElementById('floating-hearts');
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 8000);
+            }, 2000);
+        }
+
+        function startDate(dateType) {
+            currentDate = dateScenarios[dateType];
+            currentStep = 0;
+            
+            document.getElementById('date-selection').style.display = 'none';
+            document.getElementById('chat-container').style.display = 'block';
+            
+            document.getElementById('date-title').textContent = currentDate.title;
+            document.getElementById('date-subtitle').textContent = currentDate.subtitle;
+            
+            const messagesContainer = document.getElementById('chat-messages');
+            messagesContainer.innerHTML = '';
+            
+            // Display initial messages
+            currentDate.messages.forEach((msg, index) => {
+                setTimeout(() => {
+                    addMessage(msg.sender, msg.text);
+                }, index * 1500);
+            });
+            
+            // Show choices after messages
+            setTimeout(() => {
+                showChoices();
+            }, currentDate.messages.length * 1500);
+        }
+
+        function addMessage(sender, text) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = `<strong>${sender === 'aii' ? 'Aii 💕' : 'Sasa Luvv 🌸'}:</strong><br>${text}`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showChoices() {
+            const choicesContainer = document.getElementById('choice-buttons');
+            choicesContainer.innerHTML = '';
+            
+            currentDate.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-btn';
+                button.textContent = choice.text;
+                button.onclick = () => selectChoice(choice);
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        function selectChoice(choice) {
+            // Add user's choice
+            addMessage('sasa', choice.text);
+            
+            // Clear choices
+            document.getElementById('choice-buttons').innerHTML = '';
+            
+            // Add Aii's response after delay
+            setTimeout(() => {
+                addMessage('aii', choice.response);
+                
+                // Show ending message
+                setTimeout(() => {
+                    addMessage('aii', 'This date was absolutely perfect sayang! 🥰💕 Time spent with you always feels magical ✨ Thank you for making Aii the happiest person alive! Can\'t wait for our next date 😘💖');
+                }, 2000);
+            }, 1000);
+        }
+
+        function backToSelection() {
+            document.getElementById('chat-container').style.display = 'none';
+            document.getElementById('date-selection').style.display = 'grid';
+            currentDate = null;
+            currentStep = 0;
+        }
+
+        // Initialize
+        createFloatingHearts();
+    </script>
+</body>
+</html>
